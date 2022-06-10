@@ -57,18 +57,14 @@ func handler(w http.ResponseWriter, req *http.Request) {
 func play(input *ArenaUpdate) string {
 	log.Printf("IN: %#v", input)
 
-	x := input.Arena.Dimensions[0]
-	y := input.Arena.Dimensions[1]
-	action := TurnLeft
-
-	board, myPos := getBoard(input.Arena.State, x, y)
+	board, myPos := getBoard(input.Arena.State, input.Arena.Dimensions[0], input.Arena.Dimensions[1])
 	targetName := findAttackableEnemy(board, myPos)
 	// Not found
 	if targetName == "" {
 		enemyPos := findNearestEnemy(board, myPos)
 		targetName = board[enemyPos.y][enemyPos.x]
 	}
-	action = checkDirection(myName, targetName, input.Arena.State)
+	action := takeAction(myName, targetName, input.Arena.State)
 
 	return action.String()
 }
@@ -120,10 +116,6 @@ func findAttackableEnemy(board [][]string, myself Position) string {
 	return ""
 }
 
-func getPosition(state map[string]PlayerState, name string) Position {
-	return Position{state[name].X, state[name].Y}
-}
-
 // isInside checks the position is in the board or not.
 func isInside(x, y int, board [][]string) bool {
 	row := len(board)
@@ -132,7 +124,7 @@ func isInside(x, y int, board [][]string) bool {
 	return x >= 0 && x < col && y >= 0 && y < row
 }
 
-func checkDirection(attackerName, targetName string, playerInfo map[string]PlayerState) Action {
+func takeAction(attackerName, targetName string, playerInfo map[string]PlayerState) Action {
 	attacker := playerInfo[attackerName]
 	target := playerInfo[targetName]
 
