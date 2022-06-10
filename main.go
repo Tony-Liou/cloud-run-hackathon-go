@@ -63,7 +63,7 @@ func play(input *ArenaUpdate) string {
 
 	board, myPos := getBoard(input.Arena.State, x, y)
 	targetName := findAttackableEnemy(board, myPos)
-	//targetPos := getPosition(input.Arena.State, targetName)
+	// Not found
 	if targetName == "" {
 		enemyPos := findNearestEnemy(board, myPos)
 		targetName = board[enemyPos.y][enemyPos.x]
@@ -162,7 +162,7 @@ func checkDirection(attackerName, targetName string, playerInfo map[string]Playe
 				return TurnLeft
 			}
 		}
-	} else { // Same row
+	} else if attacker.Y-target.Y == 0 { // Same row
 		if attacker.X-target.X > 0 { // Right
 			switch attacker.Direction {
 			case "N":
@@ -184,6 +184,56 @@ func checkDirection(attackerName, targetName string, playerInfo map[string]Playe
 				return TurnLeft
 			case "W":
 				return TurnLeft
+			}
+		}
+	} else { // Not in line
+		if attacker.X-target.X > 0 {
+			if attacker.Y-target.Y > 0 { // Bottom right
+				switch attacker.Direction {
+				case "N":
+					return MoveForward
+				case "E":
+					return TurnLeft
+				case "S":
+					return TurnRight
+				case "W":
+					return MoveForward
+				}
+			} else { // Top right
+				switch attacker.Direction {
+				case "N":
+					return TurnLeft
+				case "E":
+					return TurnRight
+				case "S":
+					return MoveForward
+				case "W":
+					return MoveForward
+				}
+			}
+		} else {
+			if attacker.Y-target.Y > 0 { // Bottom left
+				switch attacker.Direction {
+				case "N":
+					return MoveForward
+				case "E":
+					return MoveForward
+				case "S":
+					return TurnLeft
+				case "W":
+					return TurnRight
+				}
+			} else { // Top left
+				switch attacker.Direction {
+				case "N":
+					return TurnRight
+				case "E":
+					return MoveForward
+				case "S":
+					return MoveForward
+				case "W":
+					return TurnLeft
+				}
 			}
 		}
 	}
