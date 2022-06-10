@@ -88,6 +88,7 @@ func getBoard(playerInfo map[string]PlayerState, x, y int) (board [][]string, my
 	return
 }
 
+// findAttackableEnemy finds if an enemy is in the same line with me.
 func findAttackableEnemy(board [][]string, myself Position) string {
 	for i := 1; i <= 3; i++ {
 		y := myself.y - i
@@ -124,6 +125,7 @@ func isInside(x, y int, board [][]string) bool {
 	return x >= 0 && x < col && y >= 0 && y < row
 }
 
+// takeAction uses the facing direction and location to decide how to move.
 func takeAction(attackerName, targetName string, playerInfo map[string]PlayerState) Action {
 	attacker := playerInfo[attackerName]
 	target := playerInfo[targetName]
